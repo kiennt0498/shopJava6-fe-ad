@@ -2,24 +2,27 @@ import React, { Component } from "react";
 import withRouter from "../../helpers/withRouter";
 import HeaderContent from "../common/HeaderContent";
 import Column from "antd/es/table/Column";
-import { Button, Modal, Space, Table, Tag } from "antd";
+import { Button, Modal, Skeleton, Space, Table, Tag } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { BiEdit, BiSolidTrash } from "react-icons/bi";
+import { connect } from "react-redux";
+import { getListCategory, clearList } from "../../redux/actions/actionCategory";
 
 class ListCategory extends Component {
   constructor() {
     super();
     this.state = {
-      dataSource: [
-        { categoryId: 1, name: "hat", status: 0 },
-        { categoryId: 2, name: "hat 2", status: 1 },
-        { categoryId: 3, name: "hat 3", status: 0 },
-        { categoryId: 4, name: "hat 4", status: 1 },
-        { categoryId: 5, name: "hat 5", status: 0 },
-      ],
-      category: {},
+      categories: [],
     };
   }
+
+  componentDidMount = () => {
+    this.props.getListCategory();
+  };
+
+  componentWillUnmount = () => {
+    this.props.clearList();
+  };
 
   editCategory = (data) => {
     console.log(data);
@@ -48,15 +51,25 @@ class ListCategory extends Component {
 
   render() {
     const { navigate } = this.props.router;
+    const { categories, isLoading } = this.props;
+
+    if (isLoading) {
+      return (
+        <>
+          <HeaderContent title="List Category" navigate={navigate} />
+          <Skeleton active />
+        </>
+      );
+    }
     return (
       <div>
         <HeaderContent title="List Category" navigate={navigate} />
 
-        <Table dataSource={this.state.dataSource} rowKey="categoryId">
+        <Table dataSource={categories} rowKey="id">
           <Column
             title="Category ID"
-            key="categoryId"
-            dataIndex="categoryId"
+            key="id"
+            dataIndex="id"
             align="center"
             width={40}
           ></Column>
@@ -74,10 +87,8 @@ class ListCategory extends Component {
             dataIndex="status"
             align="center"
             render={(_, { status }) => {
-              let color = status === 0 ? "green" : "volcano";
-              let name = status === 0 ? "Visible" : "Invisible";
-
-              return <Tag color={color}>{name}</Tag>;
+              let color = status === "Visible" ? "green" : "volcano";
+              return <Tag color={color}>{status}</Tag>;
             }}
           ></Column>
 
@@ -114,4 +125,16 @@ class ListCategory extends Component {
   }
 }
 
-export default withRouter(ListCategory);
+const mapStateToProps = (state) => ({
+  categories: state.CategoryReducer.categories,
+  isLoading: state.commonReducer.isLoading,
+});
+
+const mapDispatchToProps = {
+  getListCategory,
+  clearList,
+};
+
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(ListCategory)
+);

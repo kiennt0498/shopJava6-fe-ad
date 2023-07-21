@@ -2,14 +2,19 @@ import React, { Component } from "react";
 import withRouter from "../../helpers/withRouter";
 import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import HeaderContent from "../common/HeaderContent";
+import { connect } from "react-redux";
+import { insterCategory } from "../../redux/actions/actionCategory";
 
 class AddOrEdit extends Component {
   onSubmitForm = (values) => {
     console.log(values);
+    const { navigate } = this.props.router;
+    this.props.insterCategory(values, navigate);
   };
 
   render() {
     const { navigate } = this.props.router;
+    const { isLoading } = this.props;
     return (
       <div>
         <HeaderContent title="Add New Category" navigate={navigate} />
@@ -39,6 +44,7 @@ class AddOrEdit extends Component {
                 htmlType="submit"
                 type="primary"
                 style={{ float: "right" }}
+                loading={isLoading}
               >
                 Save
               </Button>
@@ -49,5 +55,14 @@ class AddOrEdit extends Component {
     );
   }
 }
+const mapStateToProps = (state) => ({
+  category: state.CategoryReducer.category,
+  isLoading: state.commonReducer.isLoading,
+});
+const mapDispatchToProps = {
+  insterCategory,
+};
 
-export default withRouter(AddOrEdit);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(AddOrEdit)
+);
