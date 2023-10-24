@@ -1,88 +1,96 @@
 import { toast } from "react-toastify";
-import CategoryService from "../../services/CategoryService";
+import ManufacturerService from "../../services/ManufacturerService";
 import {
-  CATEGORIES_DELETE,
-  CATEGORIES_SET,
-  CATEGORIES_STATE_CLEAR,
-  CATEGORY_SET,
+  MANUFACTURER_SET,
   COMMON_LOADING_SET,
+  MANUFACTURERES_SET,
+  MANUFACTURERES_STATE_CLEAR,
+  MANUFACTURERES_DELETE,
+  MANUFACTURER_APPEND,
 } from "./actiontypes";
 
-const service = new CategoryService();
+const service = new ManufacturerService();
 
-export const insterCategory = (category, navigate) => async (dispatch) => {
+export const insterManufacturer = (manufacturer) => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.insertCategory(category);
-
+    const res = await service.insertManufacturer(manufacturer);
+    console.log(res);
     if (res.status === 201) {
       dispatch({
-        type: CATEGORY_SET,
+        type: MANUFACTURER_SET,
         payload: res.data,
       });
+
+      dispatch({
+        type: MANUFACTURER_APPEND,
+        payload: res.data,
+      });
+
       dispatch({
         type: COMMON_LOADING_SET,
         payload: false,
       });
       toast.success("Save Done");
-      navigate("/category/list");
     }
   } catch (error) {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: false,
     });
+    console.log(error.message);
     toast.error(
       error.response.data ? error.response.data.message : error.message
     );
   }
 };
 
-export const updateCategory = (id, category, navigate) => async (dispatch) => {
-  try {
-    dispatch({
-      type: COMMON_LOADING_SET,
-      payload: true,
-    });
-    const res = await service.updateCategory(id, category);
-
-    if (res.status === 201) {
+export const updateManufacturer =
+  (id, manufacturer, navigate) => async (dispatch) => {
+    try {
       dispatch({
-        type: CATEGORY_SET,
-        payload: res.data,
+        type: COMMON_LOADING_SET,
+        payload: true,
       });
+      const res = await service.updateManufacturer(id, manufacturer);
+
+      if (res.status === 201) {
+        dispatch({
+          type: MANUFACTURER_SET,
+          payload: res.data,
+        });
+        dispatch({
+          type: COMMON_LOADING_SET,
+          payload: false,
+        });
+        toast.success("Update Done");
+        navigate("/Manufacturer/list");
+      }
+    } catch (error) {
       dispatch({
         type: COMMON_LOADING_SET,
         payload: false,
       });
-      toast.success("Update Done");
-      navigate("/category/list");
+      toast.error(
+        error.response.data ? error.response.data.message : error.message
+      );
     }
-  } catch (error) {
-    dispatch({
-      type: COMMON_LOADING_SET,
-      payload: false,
-    });
-    toast.error(
-      error.response.data ? error.response.data.message : error.message
-    );
-  }
-};
+  };
 
-export const getListCategory = () => async (dispatch) => {
+export const getListManufacturer = () => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.getCategory();
-
+    const res = await service.getManufacturer();
+    console.log(res);
     if (res.status === 200) {
       dispatch({
-        type: CATEGORIES_SET,
+        type: MANUFACTURERES_SET,
         payload: res.data,
       });
 
@@ -102,23 +110,23 @@ export const getListCategory = () => async (dispatch) => {
   }
 };
 
-export const clearList = () => async (dispatch) => {
-  dispatch({ type: CATEGORIES_STATE_CLEAR });
+export const clearList = () => (dispatch) => {
+  dispatch({ type: MANUFACTURERES_STATE_CLEAR });
 };
 
-export const deleteCategory = (id) => async (dispatch) => {
+export const deleteManufacturer = (id) => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.deleteCategory(id);
+    const res = await service.deleteManufacturer(id);
 
     console.log(res);
 
     if (res.status === 200) {
       dispatch({
-        type: CATEGORIES_DELETE,
+        type: MANUFACTURERES_DELETE,
         payload: id,
       });
 
@@ -139,7 +147,7 @@ export const deleteCategory = (id) => async (dispatch) => {
   }
 };
 
-export const getCategory = (id) => async (dispatch) => {
+export const getManufacturer = (id) => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
@@ -151,7 +159,7 @@ export const getCategory = (id) => async (dispatch) => {
 
     if (res.status === 200) {
       dispatch({
-        type: CATEGORY_SET,
+        type: MANUFACTURER_SET,
         payload: res.data,
       });
 
@@ -172,9 +180,9 @@ export const getCategory = (id) => async (dispatch) => {
   }
 };
 
-export const clearCategory = () => async (dispatch) => {
+export const clearManufacturer = () => async (dispatch) => {
   dispatch({
-    type: CATEGORY_SET,
+    type: MANUFACTURER_SET,
     payload: { id: "", name: "", status: "Visible" },
   });
 };

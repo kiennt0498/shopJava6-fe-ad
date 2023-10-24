@@ -6,7 +6,11 @@ import { Button, Modal, Skeleton, Space, Table, Tag } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { BiEdit, BiSolidTrash } from "react-icons/bi";
 import { connect } from "react-redux";
-import { getListCategory, clearList } from "../../redux/actions/actionCategory";
+import {
+  getListCategory,
+  clearList,
+  deleteCategory,
+} from "../../redux/actions/actionCategory";
 
 class ListCategory extends Component {
   constructor() {
@@ -26,6 +30,9 @@ class ListCategory extends Component {
 
   editCategory = (data) => {
     console.log(data);
+
+    const { navigate } = this.props.router;
+    navigate("/category/update/" + data.id);
   };
 
   openDeleteModal = (data) => {
@@ -39,14 +46,13 @@ class ListCategory extends Component {
       title: "Confirm",
       icon: <ExclamationCircleOutlined />,
       content: message,
-      onOk: this.deleteCategory,
+      onOk: () => this.handleDeleteCategory(data),
       okText: "Delete",
       cancelText: "Cancel",
     });
   };
-
-  deleteCategory = () => {
-    console.log(this.state.category);
+  handleDeleteCategory = (data) => {
+    this.props.deleteCategory(data.id);
   };
 
   render() {
@@ -133,6 +139,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getListCategory,
   clearList,
+  deleteCategory,
 };
 
 export default withRouter(

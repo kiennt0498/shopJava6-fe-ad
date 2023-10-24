@@ -1,91 +1,109 @@
 import { toast } from "react-toastify";
-import CategoryService from "../../services/CategoryService";
+import ProductService from "../../services/ProductService";
 import {
-  CATEGORIES_DELETE,
-  CATEGORIES_SET,
-  CATEGORIES_STATE_CLEAR,
-  CATEGORY_SET,
   COMMON_LOADING_SET,
+  PRODUCTS_DEL,
+  PRODUCTS_SET,
+  PRODUCT_ADDEND,
+  PRODUCT_SET,
 } from "./actiontypes";
 
-const service = new CategoryService();
+const service = new ProductService();
 
-export const insterCategory = (category, navigate) => async (dispatch) => {
+export const insterProduct = (product, navigate) => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.insertCategory(category);
+    const res = await service.insertProduct(product);
 
-    if (res.status === 201) {
+    if (res && res.status === 201) {
       dispatch({
-        type: CATEGORY_SET,
+        type: PRODUCT_SET,
         payload: res.data,
       });
+
+      dispatch({
+        type: PRODUCT_ADDEND,
+        payload: res.data,
+      });
+
       dispatch({
         type: COMMON_LOADING_SET,
         payload: false,
       });
       toast.success("Save Done");
-      navigate("/category/list");
     }
   } catch (error) {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: false,
     });
+
     toast.error(
       error.response.data ? error.response.data.message : error.message
     );
   }
+  dispatch({
+    type: COMMON_LOADING_SET,
+    payload: true,
+  });
+  clearProduct();
+  navigate("/product/list");
 };
 
-export const updateCategory = (id, category, navigate) => async (dispatch) => {
+export const updateProduct = (id, product, navigate) => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.updateCategory(id, category);
 
-    if (res.status === 201) {
+    const res = await service.updateProduct(id, product);
+
+    if (res && res.status === 201) {
       dispatch({
-        type: CATEGORY_SET,
+        type: PRODUCT_SET,
         payload: res.data,
       });
+
       dispatch({
         type: COMMON_LOADING_SET,
         payload: false,
       });
       toast.success("Update Done");
-      navigate("/category/list");
     }
   } catch (error) {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: false,
     });
+    console.log(error.message);
     toast.error(
       error.response.data ? error.response.data.message : error.message
     );
   }
+  dispatch({
+    type: COMMON_LOADING_SET,
+    payload: true,
+  });
+  clearProduct();
+  navigate("/product/list");
 };
 
-export const getListCategory = () => async (dispatch) => {
+export const getListProduct = () => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.getCategory();
-
-    if (res.status === 200) {
+    const res = await service.getProduct();
+    if (res && res.status === 200) {
       dispatch({
-        type: CATEGORIES_SET,
+        type: PRODUCTS_SET,
         payload: res.data,
       });
-
       dispatch({
         type: COMMON_LOADING_SET,
         payload: false,
@@ -96,29 +114,40 @@ export const getListCategory = () => async (dispatch) => {
       type: COMMON_LOADING_SET,
       payload: false,
     });
+    console.log(error.message);
     toast.error(
       error.response.data ? error.response.data.message : error.message
     );
   }
+  dispatch({
+    type: COMMON_LOADING_SET,
+    payload: true,
+  });
 };
 
-export const clearList = () => async (dispatch) => {
-  dispatch({ type: CATEGORIES_STATE_CLEAR });
+export const productEditData = (product, navigate) => (dispatch) => {
+  dispatch({
+    type: PRODUCT_SET,
+    payload: product,
+  });
+  navigate("/product/edit/" + product.id);
 };
 
-export const deleteCategory = (id) => async (dispatch) => {
+export const deleteProduct = (id) => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.deleteCategory(id);
+    const res = await service.deleteProduct(id);
 
     console.log(res);
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
+      console.log("status:", res.status);
+      console.log("Run Ac");
       dispatch({
-        type: CATEGORIES_DELETE,
+        type: PRODUCTS_DEL,
         payload: id,
       });
 
@@ -139,42 +168,9 @@ export const deleteCategory = (id) => async (dispatch) => {
   }
 };
 
-export const getCategory = (id) => async (dispatch) => {
-  try {
-    dispatch({
-      type: COMMON_LOADING_SET,
-      payload: true,
-    });
-    const res = await service.getItem(id);
-
-    console.log(res);
-
-    if (res.status === 200) {
-      dispatch({
-        type: CATEGORY_SET,
-        payload: res.data,
-      });
-
-      dispatch({
-        type: COMMON_LOADING_SET,
-        payload: false,
-      });
-      toast.success(res.data);
-    }
-  } catch (error) {
-    dispatch({
-      type: COMMON_LOADING_SET,
-      payload: false,
-    });
-    toast.error(
-      error.response.data ? error.response.data.message : error.message
-    );
-  }
-};
-
-export const clearCategory = () => async (dispatch) => {
+export const clearProduct = () => (dispatch) => {
   dispatch({
-    type: CATEGORY_SET,
-    payload: { id: "", name: "", status: "Visible" },
+    type: PRODUCT_SET,
+    payload: {},
   });
 };

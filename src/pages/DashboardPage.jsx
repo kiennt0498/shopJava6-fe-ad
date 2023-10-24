@@ -24,6 +24,15 @@ import Home from "../components/home/Home";
 import AddOrEdit from "../components/categories/AddOrEdit";
 import ListCategory from "../components/categories/ListCategory";
 
+import AddOrEditProduct from "../components/products/AddOrEditProduct";
+import ListProduct from "../components/products/ListProduct";
+
+import ListAccount from "../components/Account/ListAccount";
+import ListOrder from "../components/Order/ListOrder";
+import Login from "../components/auth/Login";
+import OrderDetail from "../components/Order/OrderDetail";
+import Manufacturer from "../components/manufacturer/Manufacturer";
+
 const { Header, Sider, Content } = Layout;
 
 const DashboardPage = () => {
@@ -84,11 +93,13 @@ const DashboardPage = () => {
                   key: "31",
                   icon: <MdAddCircleOutline />,
                   label: "Add Product",
+                  onClick: () => navigate("/product/add"),
                 },
                 {
                   key: "32",
                   icon: <MdFormatListBulleted />,
                   label: "List Product",
+                  onClick: () => navigate("/product/list"),
                 },
               ],
             },
@@ -96,6 +107,7 @@ const DashboardPage = () => {
               key: "4",
               icon: <AiFillCreditCard />,
               label: "Orders",
+              onClick: () => navigate("/order"),
             },
             {
               key: "5",
@@ -111,11 +123,13 @@ const DashboardPage = () => {
               key: "7",
               icon: <MdManageAccounts />,
               label: "Profiles",
+              onClick: () => navigate("/account/acc"),
             },
             {
               key: "8",
               icon: <MdSupervisorAccount />,
-              label: "Accounts",
+              label: "manufacturer",
+              onClick: () => navigate("/manufacturer"),
             },
             {
               key: "9",
@@ -169,8 +183,29 @@ const DashboardPage = () => {
           <div className="content-panel">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/category/add" element={<AddOrEdit />} />
+              <Route path="/category/add" element={<AddOrEdit key="a" />} />
+              <Route
+                path="/category/update/:id"
+                element={<AddOrEdit key="u" />}
+              />
               <Route path="/category/list" element={<ListCategory />} />
+
+              <Route path="/product/list" element={<ListProduct />} />
+              <Route
+                path="/product/add"
+                element={<AddOrEditProduct key="p" />}
+              />
+              <Route
+                path="/product/edit/:id"
+                element={<AddOrEditProduct key="o" />}
+              />
+
+              <Route path="/account/acc" element={<ListAccount />} />
+
+              <Route path="/order" element={<ListOrder />} />
+              <Route path="/order/orderdetail/:id" element={<OrderDetail />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/manufacturer" element={<Manufacturer />} />
             </Routes>
           </div>
 

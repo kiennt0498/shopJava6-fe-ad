@@ -1,26 +1,27 @@
 import { toast } from "react-toastify";
-import CategoryService from "../../services/CategoryService";
+
 import {
-  CATEGORIES_DELETE,
-  CATEGORIES_SET,
-  CATEGORIES_STATE_CLEAR,
-  CATEGORY_SET,
+  ACCOUNTS_DEL,
+  ACCOUNTS_SET,
+  ACCOUNT_SET,
+  ACCOUNT_STATE_CLEAR,
   COMMON_LOADING_SET,
 } from "./actiontypes";
+import AccountService from "../../services/AccountService";
 
-const service = new CategoryService();
+const service = new AccountService();
 
-export const insterCategory = (category, navigate) => async (dispatch) => {
+export const insterAccount = (account, navigate) => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.insertCategory(category);
+    const res = await service.insertAccount(account);
 
     if (res.status === 201) {
       dispatch({
-        type: CATEGORY_SET,
+        type: ACCOUNT_SET,
         payload: res.data,
       });
       dispatch({
@@ -28,7 +29,7 @@ export const insterCategory = (category, navigate) => async (dispatch) => {
         payload: false,
       });
       toast.success("Save Done");
-      navigate("/category/list");
+      navigate("/account/list");
     }
   } catch (error) {
     dispatch({
@@ -41,17 +42,17 @@ export const insterCategory = (category, navigate) => async (dispatch) => {
   }
 };
 
-export const updateCategory = (id, category, navigate) => async (dispatch) => {
+export const updateAccount = (id, account, navigate) => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.updateCategory(id, category);
+    const res = await service.updateAccount(id, account);
 
     if (res.status === 201) {
       dispatch({
-        type: CATEGORY_SET,
+        type: ACCOUNT_SET,
         payload: res.data,
       });
       dispatch({
@@ -59,7 +60,7 @@ export const updateCategory = (id, category, navigate) => async (dispatch) => {
         payload: false,
       });
       toast.success("Update Done");
-      navigate("/category/list");
+      navigate("/account/acc");
     }
   } catch (error) {
     dispatch({
@@ -72,17 +73,17 @@ export const updateCategory = (id, category, navigate) => async (dispatch) => {
   }
 };
 
-export const getListCategory = () => async (dispatch) => {
+export const getListAccount = () => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.getCategory();
+    const res = await service.getAccount();
 
     if (res.status === 200) {
       dispatch({
-        type: CATEGORIES_SET,
+        type: ACCOUNTS_SET,
         payload: res.data,
       });
 
@@ -103,22 +104,22 @@ export const getListCategory = () => async (dispatch) => {
 };
 
 export const clearList = () => async (dispatch) => {
-  dispatch({ type: CATEGORIES_STATE_CLEAR });
+  dispatch({ type: ACCOUNT_STATE_CLEAR });
 };
 
-export const deleteCategory = (id) => async (dispatch) => {
+export const deleteAccount = (id) => async (dispatch) => {
   try {
     dispatch({
       type: COMMON_LOADING_SET,
       payload: true,
     });
-    const res = await service.deleteCategory(id);
+    const res = await service.deleteAccount(id);
 
     console.log(res);
 
     if (res.status === 200) {
       dispatch({
-        type: CATEGORIES_DELETE,
+        type: ACCOUNTS_DEL,
         payload: id,
       });
 
@@ -137,44 +138,4 @@ export const deleteCategory = (id) => async (dispatch) => {
       error.response.data ? error.response.data.message : error.message
     );
   }
-};
-
-export const getCategory = (id) => async (dispatch) => {
-  try {
-    dispatch({
-      type: COMMON_LOADING_SET,
-      payload: true,
-    });
-    const res = await service.getItem(id);
-
-    console.log(res);
-
-    if (res.status === 200) {
-      dispatch({
-        type: CATEGORY_SET,
-        payload: res.data,
-      });
-
-      dispatch({
-        type: COMMON_LOADING_SET,
-        payload: false,
-      });
-      toast.success(res.data);
-    }
-  } catch (error) {
-    dispatch({
-      type: COMMON_LOADING_SET,
-      payload: false,
-    });
-    toast.error(
-      error.response.data ? error.response.data.message : error.message
-    );
-  }
-};
-
-export const clearCategory = () => async (dispatch) => {
-  dispatch({
-    type: CATEGORY_SET,
-    payload: { id: "", name: "", status: "Visible" },
-  });
 };
